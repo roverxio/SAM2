@@ -3,8 +3,11 @@ import os
 
 import aioboto3
 import aiohttp
+import numpy as np
+from PIL import Image
 from botocore.exceptions import ClientError
 
+from config import app_config
 from exceptions import DownloadError, DeleteError, UploadError
 
 
@@ -45,3 +48,15 @@ async def upload_file(file_path, bucket_name, object_name):
         except ClientError as e:
             print(f"Error uploading {file_path} to S3: {e}")
             raise UploadError("Failed to upload file to S3")
+
+
+def save_masks(name, masks):
+    n = name.split(".")[0]
+    paths = []
+    os.makedirs(f"{app_config.paths.tmp_file_dir}outputs/", exist_ok=True)
+    for i in range(masks.shape[0]):
+        m = masks[i]
+        image = Image.fromarray((m * 255).astype(np.uint8))
+        paths.append(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
+        image.save(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
+    return paths

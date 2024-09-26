@@ -1,5 +1,4 @@
 import os
-from tkinter import Image
 
 import numpy as np
 import torch
@@ -16,7 +15,7 @@ from sam2.sam2_image_predictor import SAM2ImagePredictor
 @torch.autocast(device_type="cuda", dtype=torch.bfloat16)
 async def segment_image(payload: SAMRequest):
     try:
-        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_file_dir}/inputs/")
+        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_file_dir}inputs/")
         model = build_model(payload.model.get_config(), payload.model.get_checkpoint())
         print(f"Built SAM model: {payload.model.get_config()} config and {payload.model.get_checkpoint()} checkpoint")
         predictor = SAM2ImagePredictor(model)
@@ -31,7 +30,7 @@ async def segment_image(payload: SAMRequest):
             multimask_output=True,
         )
         print(f"Image Segmentation successful.")
-        mask_paths = save_masks(os.path.basename(payload.media_url), masks)
+        mask_paths = storage.save_masks(os.path.basename(payload.media_url), masks)
         mask_urls = []
         for path in mask_paths:
             url = await storage.upload_file(
@@ -39,6 +38,7 @@ async def segment_image(payload: SAMRequest):
                 app_config.storage.s3.bucket,
                 f"stg/SAM/image_masks/{os.path.basename(path)}")
             mask_urls.append(url)
+            await storage.delete_file(path)
         print(f"Masked upload successful")
         await storage.delete_file(file_path)
         return {
@@ -56,14 +56,3 @@ def build_model(config, checkpoint):
 def get_image(path):
     image = Image.open(path)
     return np.array(image.convert("RGB"))
-
-
-def save_masks(name, masks):
-    n = name.split(".")[0]
-    paths = []
-    for i in range(masks.shape[0]):
-        m = masks[i]
-        image = Image.fromarray((m * 255).astype(np.uint8))
-        paths.append(f"{app_config.paths.tmp_file_dir}/outputs/{n}_{i}.png")
-        image.save(f"{app_config.paths.tmp_file_dir}/outputs/{n}_{i}.png")
-    return paths
