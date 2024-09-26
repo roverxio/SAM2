@@ -1,0 +1,6 @@
+paths:
+  tmp_file_dir: /path/to/temp/files
+
+storage:
+  s3:
+    bucket: sd-user-generated-data
