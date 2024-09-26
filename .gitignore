@@ -10,3 +10,4 @@ outputs/*
 checkpoints/*.pt
 .idea/
 tmp/
+config.yaml

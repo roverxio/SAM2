@@ -60,3 +60,13 @@ def save_masks(name, masks):
         paths.append(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
         image.save(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
     return paths
+
+
+def save_masklets(segments, name):
+    paths = []
+    for frame in segments.items():
+        for obj in frame[1].items():
+            image = Image.fromarray((obj[1][0] * 255).astype(np.uint8))
+            paths.append(f"{app_config.paths.tmp_video_dir}outputs/{name}/{frame[0]}.png")
+            image.save(f"{app_config.paths.tmp_video_dir}outputs/{name}/{frame[0]}.png")
+    return paths

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class Paths(BaseModel):
     tmp_file_dir: str
+    tmp_video_dir: str
 
 
 class AmazonS3(BaseModel):

@@ -5,10 +5,18 @@ import torch
 from PIL import Image
 
 from config import app_config
+from enums import MediaType
 from models.requests import SAMRequest
 from providers import storage
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
+from .video_service import segment_video
+
+
+async def segment_media(payload: SAMRequest):
+    if payload.media_type == MediaType.Image:
+        return segment_image(payload)
+    return segment_video(payload)
 
 
 @torch.inference_mode()
@@ -16,10 +24,10 @@ from sam2.sam2_image_predictor import SAM2ImagePredictor
 async def segment_image(payload: SAMRequest):
     try:
         file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_file_dir}inputs/")
-        model = build_model(payload.model.get_config(), payload.model.get_checkpoint())
+        model = _build_model(payload.model.get_config(), payload.model.get_checkpoint())
         print(f"Built SAM model: {payload.model.get_config()} config and {payload.model.get_checkpoint()} checkpoint")
         predictor = SAM2ImagePredictor(model)
-        predictor.set_image(get_image(file_path))
+        predictor.set_image(_get_image(file_path))
 
         input_point = np.array([[[pointer.x, pointer.y]] for pointer in payload.pointers])
         input_label = np.array([[pointer.label] for pointer in payload.pointers])
@@ -49,10 +57,10 @@ async def segment_image(payload: SAMRequest):
         raise e
 
 
-def build_model(config, checkpoint):
+def _build_model(config, checkpoint):
     return build_sam2(config, ckpt_path=checkpoint, device="cuda")
 
 
-def get_image(path):
+def _get_image(path):
     image = Image.open(path)
     return np.array(image.convert("RGB"))
