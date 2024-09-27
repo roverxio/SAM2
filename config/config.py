@@ -16,4 +16,5 @@ def load(file_path):
             raise ValueError(f"Error parsing YAML file: {e}")
 
 
+print(f"Config: {os.getenv('CONFIG_PATH', './config.yaml')}")
 app_config = load(os.getenv("CONFIG_PATH", "./config.yaml"))
