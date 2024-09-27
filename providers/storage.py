@@ -31,10 +31,11 @@ async def download_file(url, dest_path):
                 raise DownloadError("failed to download")
 
 
-async def delete_file(file_path):
+async def delete_file(file_path, log_enabled=True):
     try:
         await asyncio.to_thread(os.remove, file_path)
-        print(f"Deleted file: {file_path}")
+        if log_enabled:
+            print(f"Deleted file: {file_path}")
     except Exception as e:
         raise DeleteError(f"Failed to delete file {e.args}")
 

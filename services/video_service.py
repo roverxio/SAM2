@@ -46,7 +46,7 @@ async def segment_video(payload: SAMRequest):
 
         print("Saving masklets...")
         mask_dir = f"{app_config.paths.tmp_video_dir}outputs/{name}/"
-        storage.save_masklets(video_segments, name)
+        mask_paths = storage.save_masklets(video_segments, name)
         output_video = f"{app_config.paths.tmp_video_dir}outputs/{name}.mp4"
         print("Creating mask video...")
         _combine_frames(mask_dir, output_video, fps)
@@ -56,6 +56,8 @@ async def segment_video(payload: SAMRequest):
             app_config.storage.s3.bucket,
             f"stg/SAM/video_masks/{name}.mp4"
         )
+        for path in mask_paths:
+            await storage.delete_file(path, False)
         await storage.delete_file(video_path)
         return {
             "media_url": payload.media_url,
