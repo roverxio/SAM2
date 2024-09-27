@@ -48,6 +48,7 @@ async def segment_video(payload: SAMRequest):
         mask_dir = f"{app_config.paths.tmp_video_dir}frames/{name}/"
         mask_paths = storage.save_masklets(video_segments, mask_dir)
         output_video = f"{app_config.paths.tmp_video_dir}outputs/{name}.mp4"
+        os.makedirs(f"{app_config.paths.tmp_video_dir}outputs/", exist_ok=True)
         print("Creating mask video...")
         _combine_frames(mask_dir, output_video, fps)
         print("Uploading video...")
@@ -59,6 +60,7 @@ async def segment_video(payload: SAMRequest):
         for path in mask_paths:
             await storage.delete_file(path, False)
         await storage.delete_file(video_path)
+        await storage.delete_file(output_video)
         return {
             "media_url": payload.media_url,
             "masks": [
