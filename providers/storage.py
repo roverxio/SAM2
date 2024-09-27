@@ -31,10 +31,11 @@ async def download_file(url, dest_path):
                 raise DownloadError("failed to download")
 
 
-async def delete_file(file_path):
+async def delete_file(file_path, log_enabled=True):
     try:
         await asyncio.to_thread(os.remove, file_path)
-        print(f"Deleted file: {file_path}")
+        if log_enabled:
+            print(f"Deleted file: {file_path}")
     except Exception as e:
         raise DeleteError(f"Failed to delete file {e.args}")
 
@@ -59,4 +60,15 @@ def save_masks(name, masks):
         image = Image.fromarray((m * 255).astype(np.uint8))
         paths.append(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
         image.save(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
+    return paths
+
+
+def save_masklets(segments, mask_dir):
+    paths = []
+    os.makedirs(mask_dir, exist_ok=True)
+    for frame in segments.items():
+        for obj in frame[1].items():
+            image = Image.fromarray((obj[1][0] * 255).astype(np.uint8))
+            paths.append(f"{mask_dir}/{frame[0]}.png")
+            image.save(f"{mask_dir}/{frame[0]}.png")
     return paths
