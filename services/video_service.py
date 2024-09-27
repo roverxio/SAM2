@@ -17,7 +17,7 @@ async def segment_video(payload: SAMRequest):
         name = os.path.basename(payload.media_url).split(".")[0]
         video_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_video_dir}inputs/")
         video_dir = f"{app_config.paths.tmp_video_dir}/frames/{name}/"
-        _extract_frames(video_path, video_dir)
+        fps = _extract_frames(video_path, video_dir)
         predictor = _build_video_model(payload.model.get_config(), payload.model.get_checkpoint())
         inference_state = predictor.init_state(video_path=video_dir)
 
@@ -49,7 +49,7 @@ async def segment_video(payload: SAMRequest):
         storage.save_masklets(video_segments, name)
         output_video = f"{app_config.paths.tmp_video_dir}outputs/{name}.mp4"
         print("Creating mask video...")
-        _combine_frames(mask_dir, output_video)
+        _combine_frames(mask_dir, output_video, fps)
         print("Uploading video...")
         masklet_url = await storage.upload_file(
             output_video,
@@ -75,6 +75,8 @@ def _extract_frames(video_path, output_dir, quality=95):
     cap = cv2.VideoCapture(video_path)
     frame_count = 0000
     os.makedirs(output_dir, exist_ok=True)
+    print("Extracting fps...")
+    fps = cap.get(cv2.CAP_PROP_FPS)
     print("Extracting frames...")
 
     while True:
@@ -88,10 +90,10 @@ def _extract_frames(video_path, output_dir, quality=95):
 
     cap.release()
     print(f"Total frames extracted: {frame_count}")
-    return frame_count
+    return fps
 
 
-def _combine_frames(frames_dir, output_path, fps=30):
+def _combine_frames(frames_dir, output_path, fps=30.0):
     # Get all image files in the specified folder
     images = [img for img in os.listdir(frames_dir)]
 
