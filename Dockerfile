@@ -35,5 +35,10 @@ RUN . venv/bin/activate && pip install -r requirements.txt
 # Copy config file
 Copy config.yaml .
 
+# Set environment variables (modify these as needed)
+ENV AWS_ACCESS_KEY_ID=access_key
+ENV AWS_SECRET_ACCESS_KEY=secret_key
+ENV AWS_REGION=region
+
 # Command to run when starting the container (modify as needed)
 CMD ["bash", "-c", "source venv/bin/activate && python3 main.py"]
