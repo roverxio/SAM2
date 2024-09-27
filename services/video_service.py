@@ -81,7 +81,7 @@ def _extract_frames(video_path, output_dir, quality=95):
         if not ret:
             break
 
-        frame_path = os.path.join(output_dir, f"frame_{frame_count}.jpg")
+        frame_path = os.path.join(output_dir, f"{frame_count}.jpg")
         cv2.imwrite(frame_path, frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
         frame_count += 1
 

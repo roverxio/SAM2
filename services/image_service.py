@@ -15,8 +15,8 @@ from .video_service import segment_video
 
 async def segment_media(payload: SAMRequest):
     if payload.media_type == MediaType.Image:
-        return segment_image(payload)
-    return segment_video(payload)
+        return await segment_image(payload)
+    return await segment_video(payload)
 
 
 @torch.inference_mode()
