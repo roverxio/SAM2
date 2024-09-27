@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class Paths(BaseModel):
-    tmp_file_dir: str
+    tmp_image_dir: str
     tmp_video_dir: str
 
 

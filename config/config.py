@@ -5,6 +5,7 @@ from .models import Configuration
 
 
 def load(file_path):
+    print(f"Config: {os.getenv('CONFIG_PATH', './config.yaml')}")
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"The specified config file does not exist: {file_path}")
 

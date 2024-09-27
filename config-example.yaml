@@ -1,5 +1,6 @@
 paths:
-  tmp_file_dir: /path/to/temp/files
+  tmp_image_dir: /path/to/temp/images
+  tmp_video_dir: /path/to/temp/videos
 
 storage:
   s3:
