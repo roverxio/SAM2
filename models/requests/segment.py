@@ -18,9 +18,3 @@ class SAMRequest(BaseModel):
     frame_idx: Optional[int]
     pointers: List[Pointers]
 
-    @field_validator('frame_idx')
-    def check_frame_idx(self, v, values):
-        media_type = values.get('media_type')
-        if media_type == MediaType.Video and v is None:
-            raise ValueError('frame_idx must be provided when media_type is video.')
-        return v

@@ -5,6 +5,7 @@ from .models import Configuration
 
 
 def load(file_path):
+    print(f"Config: {os.getenv('CONFIG_PATH', './config.yaml')}")
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"The specified config file does not exist: {file_path}")
 
@@ -16,5 +17,4 @@ def load(file_path):
             raise ValueError(f"Error parsing YAML file: {e}")
 
 
-print(f"Config: {os.getenv('CONFIG_PATH', './config.yaml')}")
 app_config = load(os.getenv("CONFIG_PATH", "./config.yaml"))
