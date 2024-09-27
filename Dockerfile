@@ -32,6 +32,9 @@ RUN . venv/bin/activate && pip install -e .
 # Install dependencies from requirements.txt
 RUN . venv/bin/activate && pip install -r requirements.txt
 
+# Download SAM checkpoint
+RUN cd checkpoints && ./download_ckpts.sh
+
 # Copy config file
 Copy config.yaml .
 
