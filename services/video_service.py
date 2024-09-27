@@ -45,10 +45,11 @@ async def segment_video(payload: SAMRequest):
             video_segments[frame_idx] = per_obj_output_mask
 
         print("Saving masklets...")
-        mask_path = storage.save_masklets(video_segments, name)
+        mask_dir = f"{app_config.paths.tmp_video_dir}outputs/{name}/"
+        storage.save_masklets(video_segments, name)
         output_video = f"{app_config.paths.tmp_video_dir}outputs/{name}.mp4"
         print("Creating mask video...")
-        _combine_frames(mask_path, output_video)
+        _combine_frames(mask_dir, output_video)
         print("Uploading video...")
         masklet_url = await storage.upload_file(
             output_video,

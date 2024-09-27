@@ -62,12 +62,12 @@ def save_masks(name, masks):
     return paths
 
 
-def save_masklets(segments, name):
+def save_masklets(segments, mask_dir):
     paths = []
-    os.makedirs(f"{app_config.paths.tmp_video_dir}outputs/{name}/", exist_ok=True)
+    os.makedirs(mask_dir, exist_ok=True)
     for frame in segments.items():
         for obj in frame[1].items():
             image = Image.fromarray((obj[1][0] * 255).astype(np.uint8))
-            paths.append(f"{app_config.paths.tmp_video_dir}outputs/{name}/{frame[0]}.png")
-            image.save(f"{app_config.paths.tmp_video_dir}outputs/{name}/{frame[0]}.png")
+            paths.append(f"{mask_dir}/{frame[0]}.png")
+            image.save(f"{mask_dir}/{frame[0]}.png")
     return paths
