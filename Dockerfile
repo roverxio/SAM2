@@ -43,5 +43,7 @@ ENV AWS_ACCESS_KEY_ID=access_key
 ENV AWS_SECRET_ACCESS_KEY=secret_key
 ENV AWS_REGION=region
 
+EXPOSE 8080
+
 # Command to run when starting the container (modify as needed)
 CMD ["bash", "-c", "source venv/bin/activate && python3 main.py"]
