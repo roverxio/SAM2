@@ -64,7 +64,7 @@ def save_masks(name, masks):
 
 def save_masklets(segments, name):
     paths = []
-    os.makedirs(f"{app_config.paths.tmp_file_dir}outputs/{name}", exist_ok=True)
+    os.makedirs(f"{app_config.paths.tmp_file_dir}outputs/{name}/", exist_ok=True)
     for frame in segments.items():
         for obj in frame[1].items():
             image = Image.fromarray((obj[1][0] * 255).astype(np.uint8))
