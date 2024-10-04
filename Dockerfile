@@ -7,7 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Update the package list and install prerequisites
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y software-properties-common git && \
+    apt-get install -y software-properties-common git wget libgl1 && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install -y python3.11 python3.11-venv python3-pip && \
