@@ -1,5 +1,5 @@
-# Use the official Ubuntu 22.04 LTS as a base image
-FROM ubuntu:22.04
+# Use the official NVIDIA CUDA 12.0 base image with Ubuntu 22.04
+FROM nvidia/cuda:12.1.0-base-ubuntu22.04
 
 # Set non-interactive mode for apt-get
 ARG DEBIAN_FRONTEND=noninteractive
