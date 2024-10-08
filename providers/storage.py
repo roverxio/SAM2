@@ -55,14 +55,14 @@ async def upload_file(file_path, bucket_name, object_name):
 def save_masks(name, input_image, masks):
     n = name.split(".")[0]
     paths = []
-    os.makedirs(f"{app_config.paths.tmp_file_dir}outputs/", exist_ok=True)
+    os.makedirs(f"{app_config.paths.tmp_image_dir}outputs/", exist_ok=True)
     for i in range(masks.shape[0]):
         m = masks[i]
         mask = (m * 255).astype(np.uint8)
         img = cv2.bitwise_and(input_image, input_image, mask = mask)
         image = Image.fromarray(img)
-        paths.append(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
-        image.save(f"{app_config.paths.tmp_file_dir}outputs/{n}_{i}.png")
+        paths.append(f"{app_config.paths.tmp_image_dir}outputs/{n}_{i}.png")
+        image.save(f"{app_config.paths.tmp_image_dir}outputs/{n}_{i}.png")
     return paths
 
 

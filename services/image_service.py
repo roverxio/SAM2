@@ -23,7 +23,7 @@ async def segment_media(payload: SAMRequest):
 @torch.autocast(device_type="cuda", dtype=torch.bfloat16)
 async def segment_image(payload: SAMRequest):
     try:
-        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_file_dir}inputs/")
+        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_image_dir}inputs/")
         model = _build_model(payload.model.get_config(), payload.model.get_checkpoint())
         print(f"Built SAM model: {payload.model.get_config()} config and {payload.model.get_checkpoint()} checkpoint")
         predictor = SAM2ImagePredictor(model)
