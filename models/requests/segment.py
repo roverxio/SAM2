@@ -15,6 +15,6 @@ class SAMRequest(BaseModel):
     media_type: MediaType
     media_url: str
     model: SAMModels
-    frame_idx: Optional[int]
+    frame_idx: Optional[int] = None
     pointers: List[Pointers]
 
