@@ -23,11 +23,12 @@ async def segment_media(payload: SAMRequest):
 @torch.autocast(device_type="cuda", dtype=torch.bfloat16)
 async def segment_image(payload: SAMRequest):
     try:
-        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_file_dir}inputs/")
+        file_path = await storage.download_file(payload.media_url, f"{app_config.paths.tmp_image_dir}inputs/")
         model = _build_model(payload.model.get_config(), payload.model.get_checkpoint())
         print(f"Built SAM model: {payload.model.get_config()} config and {payload.model.get_checkpoint()} checkpoint")
         predictor = SAM2ImagePredictor(model)
-        predictor.set_image(_get_image(file_path))
+        input_image = _get_image(file_path)
+        predictor.set_image(input_image)
 
         input_point = np.array([[[pointer.x, pointer.y]] for pointer in payload.pointers])
         input_label = np.array([[pointer.label] for pointer in payload.pointers])
@@ -37,8 +38,9 @@ async def segment_image(payload: SAMRequest):
             point_labels=input_label,
             multimask_output=True,
         )
+
         print(f"Image Segmentation successful.")
-        mask_paths = storage.save_masks(os.path.basename(payload.media_url), masks)
+        mask_paths = storage.save_masks(os.path.basename(payload.media_url), input_image, masks)
         mask_urls = []
         for path in mask_paths:
             url = await storage.upload_file(
