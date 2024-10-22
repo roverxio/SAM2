@@ -6,8 +6,8 @@ from enums import MediaType, SAMModels
 
 
 class Pointers(BaseModel):
-    x: int
-    y: int
+    x: float
+    y: float
     label: int
 
 
